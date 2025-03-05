@@ -1,4 +1,3 @@
-// see SignupForm.js for comments
 import { useState } from 'react';
 import type { ChangeEvent, FormEvent } from 'react';
 import { Form, Button, Alert } from 'react-bootstrap';
@@ -6,15 +5,10 @@ import { Form, Button, Alert } from 'react-bootstrap';
 import { LOGIN_USER} from '../utils/mutations';
 import { useMutation } from '@apollo/client';
 import Auth from '../utils/auth';
-import type { User } from '../models/User';
+
 
 const LoginForm = ({ handleModalClose}: { handleModalClose: () => void }) => {
-  const [userFormData, setUserFormData] = useState<Omit<User, 'savedBooks'>>({
-     username: '',
-     email: '', 
-     password: '',
-     });
-
+  const [userFormData, setUserFormData] = useState({ email: '', password: '' });
   const [validated, setValidated] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const [loginUser] = useMutation(LOGIN_USER);
@@ -39,7 +33,7 @@ const LoginForm = ({ handleModalClose}: { handleModalClose: () => void }) => {
         variables: {...userFormData },
       });
 
-      Auth.login(data.loginUser.token);
+      Auth.login(data.login.token);
       handleModalClose();
     } catch (err) {
       console.error(err);
@@ -47,7 +41,6 @@ const LoginForm = ({ handleModalClose}: { handleModalClose: () => void }) => {
     }
 
     setUserFormData({
-      username: '',
       email: '',
       password: '',
     });
@@ -56,9 +49,12 @@ const LoginForm = ({ handleModalClose}: { handleModalClose: () => void }) => {
   return (
     <>
       <Form noValidate validated={validated} onSubmit={handleFormSubmit}>
+        {showAlert && (
         <Alert dismissible onClose={() => setShowAlert(false)} show={showAlert} variant='danger'>
           Something went wrong with your login credentials!
         </Alert>
+        )}
+
         <Form.Group className='mb-3'>
           <Form.Label htmlFor='email'>Email</Form.Label>
           <Form.Control
@@ -84,6 +80,7 @@ const LoginForm = ({ handleModalClose}: { handleModalClose: () => void }) => {
           />
           <Form.Control.Feedback type='invalid'>Password is required!</Form.Control.Feedback>
         </Form.Group>
+        
         <Button
           disabled={!(userFormData.email && userFormData.password)}
           type='submit'
