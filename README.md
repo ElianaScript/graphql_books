@@ -30,8 +30,8 @@ MongoDB
 
 Clone the repository:
 
-git clone https://github.com/yourusername/graphql-book-app.git
-cd graphql-book-app
+git clone https://github.com/ElianaScript/graphql_books
+cd graphql_books
 
 Install dependencies:
 
